@@ -1,0 +1,60 @@
+# =============================================================================
+# JRebel License Server - Docker Compose 配置
+# =============================================================================
+# 用于快速启动和管理服务
+
+services:
+  # ---------------------------------------------------------------------------
+  # JRebel 许可证服务器
+  # ---------------------------------------------------------------------------
+  jrebel-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jrebel-license-server
+    restart: unless-stopped
+
+    # 端口映射
+    ports:
+      - "${PORT:-9009}:9009"
+
+    # 环境变量配置
+    environment:
+      - HOST=0.0.0.0
+      - PORT=9009
+      - DEBUG=${DEBUG:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVER_GUID=${SERVER_GUID:-a1b4aea8-b031-4302-b602-670a990272cb}
+      - LICENSE_VALID_DAYS=${LICENSE_VALID_DAYS:-180}
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:9009/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# =============================================================================
+# 网络配置（可选）
+# =============================================================================
+networks:
+  default:
+    name: jrebel-network
