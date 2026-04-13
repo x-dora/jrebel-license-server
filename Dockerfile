@@ -19,7 +19,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # 复制 uv 配置文件
-COPY pyproject.toml uv.lock .python-version ./
+COPY pyproject.toml uv.lock .python-version README.md ./
 
 # 安装项目依赖（仅生产依赖，不安装项目本身）
 RUN uv sync --frozen --no-dev --no-install-project

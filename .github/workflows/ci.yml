@@ -54,7 +54,12 @@ jobs:
         run: uv sync --frozen --dev
 
       - name: Run tests
-        run: uv run pytest --cov --cov-report=xml
+        run: |
+          if [ -d tests ] && [ -n "$(find tests -name 'test_*.py' -o -name '*_test.py' 2>/dev/null)" ]; then
+            uv run pytest --cov --cov-report=xml
+          else
+            echo "No tests found, skipping"
+          fi
 
       - name: Upload coverage
         if: matrix.python-version == '3.12'
@@ -62,3 +67,4 @@ jobs:
         with:
           name: coverage-report
           path: coverage.xml
+          if-no-files-found: ignore
