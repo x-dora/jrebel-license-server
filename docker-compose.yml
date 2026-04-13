@@ -8,9 +8,7 @@ services:
   # JRebel 许可证服务器
   # ---------------------------------------------------------------------------
   jrebel-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/x-dora/jrebel-license-server:main
     container_name: jrebel-license-server
     restart: unless-stopped
 
@@ -29,7 +27,7 @@ services:
 
     # 健康检查
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:9009/health')"]
+      test: ["CMD", "python", "-c", "import httpx; r = httpx.get('http://localhost:9009/health'); r.raise_for_status()"]
       interval: 30s
       timeout: 10s
       retries: 3

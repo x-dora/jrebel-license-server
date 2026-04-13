@@ -66,7 +66,7 @@ EXPOSE 9009
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import httpx; httpx.get('http://localhost:9009/health')" || exit 1
+    CMD python -c "import httpx; r = httpx.get('http://localhost:9009/health'); r.raise_for_status()" || exit 1
 
 # 启动命令
 CMD ["python", "-m", "jrebel.main"]
