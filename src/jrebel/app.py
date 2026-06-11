@@ -74,9 +74,9 @@ def create_app() -> FastAPI:
         example_guid = str(uuid.uuid4())
 
         return templates.TemplateResponse(
+            request,
             "index.html",
             {
-                "request": request,
                 "base_url": base_url,
                 "example_guid": example_guid,
                 "server_version": settings.server_version,
